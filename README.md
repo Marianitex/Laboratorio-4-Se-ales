@@ -99,6 +99,47 @@ Este diagrma representa el plan de acción para cumplir el objetivo de la práct
 
 
 ---
+<a name="librerias"></a> 
+## Librerias
+
+```c
+import numpy as np
+import pandas as pd
+import scipy.signal as signal
+import pywt
+import matplotlib.pyplot as plt
+```
+### 1. `import numpy as np`
+
+**NumPy** es una librería fundamental para el trabajo con datos numéricos y operaciones matemáticas en Python. Se utiliza para crear y manipular arreglos de datos numéricos (vectores y matrices), lo cual es clave en el procesamiento de señales. NumPy permite:
+   - Almacenar los datos de la señal ECG en arreglos y realizar cálculos rápidamente.
+   - Calcular promedios, desviaciones estándar y otros estadísticos necesarios para el análisis de la variabilidad de la frecuencia cardíaca (HRV).
+   - Realizar operaciones matemáticas avanzadas, como la generación de secuencias de tiempo para graficar y analizar los datos de ECG.
+### 2. `import pandas as pd`
+
+**Pandas** es una librería para el manejo y análisis de datos en estructuras llamadas DataFrames. En esta práctica, Pandas facilita:
+   - Leer y almacenar los datos de la señal ECG en un archivo **Excel** (o CSV) para manipularlos y analizarlos fácilmente.
+   - Organizar los datos en una tabla intuitiva donde cada fila representa una muestra de la señal ECG y cada columna puede ser un atributo como el tiempo o el valor de la señal.
+   - Manipular grandes cantidades de datos, aplicar filtros y realizar análisis estadísticos.
+### 3. `import scipy.signal as signal`
+
+**SciPy** es una librería de Python para aplicaciones científicas, y su módulo `signal` incluye herramientas específicas para el procesamiento de señales. En el análisis de la señal ECG, `scipy.signal` es útil para:
+   - Aplicar filtros digitales que eliminan el ruido de la señal ECG y ayudan a obtener una señal más clara.
+   - Detectar picos en la señal, como los picos R, que son necesarios para calcular los intervalos R-R.
+   - Realizar transformaciones y análisis en el dominio de la frecuencia, útil para entender características de la HRV.
+### 4. `import pywt`
+
+**PyWavelets** permite aplicar **transformadas wavelet**, una técnica que descompone una señal en componentes de frecuencia y tiempo. En esta práctica, `pywt` se emplea para:
+   - Aplicar una transformada wavelet continua a la señal ECG, lo cual permite analizar la HRV en tiempo y frecuencia.
+   - Seleccionar diferentes tipos de wavelets, como la **wavelet de Morlet**, que es adecuada para señales biológicas.
+   - Obtener un espectrograma que muestra cómo cambian las frecuencias a lo largo del tiempo, facilitando la observación de las bandas de baja y alta frecuencia.
+### 5. `import matplotlib.pyplot as plt`
+
+**Matplotlib** es una librería para la visualización de datos en gráficos. En esta práctica, `matplotlib.pyplot` se usa para:
+   - Graficar la señal ECG en función del tiempo, lo cual facilita la identificación de picos y patrones.
+   - Visualizar los resultados del análisis de HRV, como los intervalos R-R y la variabilidad a lo largo del tiempo.
+   - Crear espectrogramas a partir de la transformada wavelet para observar las variaciones de frecuencia en el tiempo.
+---
 <a name="aadquisicion"></a> 
 ## Adquisicion de la señal
 
@@ -122,13 +163,6 @@ En Excel, los datos se organizan en filas, donde cada una representa una lectura
 Es importante mencionar que no se registra ninguna información personal del sujeto de prueba. Solo se almacenan los datos de la señal ECG sin asociarlos a ninguna identificación para garantizar la **confidencialidad** y proteger la **privacidad** del participante.
 
 Una vez que los datos están en Excel, se pueden importar a Python para realizar el análisis de la señal ECG. Python permite el procesamiento de la señal, la identificación de los picos R y el cálculo de los intervalos R-R, aspectos claves para el análisis de la variabilidad de la frecuencia cardíaca (HRV).
-
-```c
-
-```
----
-<a name="librerias"></a> 
-## Librerias
 
 ```c
 
