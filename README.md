@@ -171,8 +171,6 @@ Una vez que los datos están en Excel, se pueden importar a Python para realizar
 ```c
 # Parámetros de simulación
 fs = 250  # Frecuencia de muestreo en Hz
-duration_target = 5 * 60  # Duración objetivo en segundos (5 minutos)
-samples_target = duration_target * fs  # Número de muestras objetivo
 
 # Función para cargar y procesar el archivo CSV de ECG
 def cargar_datos_ecg(filepath):
