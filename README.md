@@ -154,6 +154,8 @@ Luego, es necesario configurar el STM32 para que lea la señal proveniente del A
 
 Para asegurar la calidad de la señal, se deben tomar medidas para reducir el ruido durante la captura. Esto incluye el uso de cables cortos, evitar movimientos durante la medición y realizar el registro en un ambiente con baja interferencia eléctrica. La persona debe permanecer en **reposo** durante los **5 minutos** de grabación para obtener una señal estable y clara.
 
+![image](https://github.com/user-attachments/assets/233c5cbb-025a-42bc-a3d7-5678fff0ace9)
+
 El almacenamiento de datos es el siguiente paso. El STM32 procesa la señal y la envía a una computadora mediante una conexión serial (como **UART** o **USB**), lo cual permite la transmisión de la señal desde el STM32 a la computadora. En la computadora, un programa (como en **Python** o con software del STM32) captura los datos y los guarda en un archivo **Excel** para facilitar su posterior análisis. Para visualizar esta señal en el sistema de adquisición, se puede acceder a través del menú introduciendo el número "1".
 
 ![Imagen de WhatsApp 2024-10-30 a las 17 23 17_952178e8](https://github.com/user-attachments/assets/cd8ccf8f-18ff-4b51-b109-38af0b5427bf)
@@ -291,12 +293,60 @@ def filtrar_senal(ecg_signal, fs):
     return ecg_filtered  # Retorna la señal filtrada
 ```
 
+En el análisis de la señal cruda de ECG, se observa una significativa presencia de componentes de alta frecuencia que generan un alto nivel de ruido. Tras el proceso de filtrado, se evidencia que estos componentes han sido reducidos de manera efectiva, gracias a la implementación de un filtro pasabajo con una frecuencia de corte de 15 Hz. Este filtro ha permitido atenuar los elementos de alta frecuencia que no son relevantes para el análisis de la variabilidad de la frecuencia cardíaca (HRV). Como resultado, la señal filtrada presenta una forma de onda mucho más limpia y clara, lo que facilita un análisis más preciso.
+
+Asimismo, el filtrado ha logrado eliminar de manera eficaz cualquier interferencia a 55 Hz, generalmente atribuida a la red eléctrica en ciertos entornos. Esto se debe a la aplicación de un filtro notch específicamente diseñado para esta frecuencia, lo que permite una señal sin los picos indeseados provocados por el ruido eléctrico. Esta mejora en la calidad de la señal es crucial para detectar con precisión los picos R del ECG, sin el riesgo de que la interferencia afecte los resultados.
+
+En cuanto a la conservación de los picos R, el filtro ha logrado mantener estos elementos característicos de la señal sin causar distorsiones significativas. La elección de una frecuencia de corte de 0.5 Hz para el filtro pasaalto ha sido acertada, ya que permite conservar los componentes de baja frecuencia esenciales del ECG y, en consecuencia, la forma de onda retiene sus características fundamentales. Esta preservación de los picos R es esencial para asegurar que el procesamiento posterior, enfocado en la detección precisa de dichos picos, se realice sin errores atribuibles a alteraciones en la señal.
+
+Si bien el filtrado ha causado una ligera reducción en la amplitud de la señal, los picos R continúan siendo prominentes y claramente distinguibles. Esta reducción de amplitud no afecta el análisis, ya que los picos R siguen siendo visibles y la señal ahora está libre de ruido que podría inducir detecciones falsas.
+
+![image](https://github.com/user-attachments/assets/74b1057b-6f19-41eb-a42e-73eded924156)
+
+```c
+# Función para detectar los picos R y calcular intervalos R-R
+def detectar_picos_rr(ecg_filtered, fs):
+    height = 0.5 * np.max(ecg_filtered)  # Define el umbral de altura para la detección de picos
+    peaks, _ = signal.find_peaks(ecg_filtered, distance=int(0.6 * fs), height=height)  # Detecta los picos R
+    rr_intervals = np.diff(peaks) / fs  # Calcula los intervalos R-R
+    return peaks, rr_intervals  # Retorna los picos y los intervalos R-R
+```
+
+Para identificar los picos R en la señal de ECG filtrada, se utiliza una función de detección de picos basada en ciertos criterios de umbral y distancia. Primero, se define un umbral de altura como el 50% del valor máximo de la señal, lo que asegura que solo los picos R prominentes, que representan las contracciones ventriculares en el ECG, sean seleccionados. Luego, se aplica una restricción de distancia mínima entre los picos para evitar que otros picos más pequeños, que no representan contracciones ventriculares, sean erróneamente detectados como picos R. La distancia mínima se define en función de la frecuencia de muestreo (fs) y representa aproximadamente 0.6 segundos, un tiempo típico entre latidos en reposo.
+
+Tras la detección de los picos R, se calculan los intervalos R-R, que representan el tiempo entre dos picos R consecutivos. Estos intervalos se obtienen mediante la diferencia entre las posiciones de los picos en términos de muestras, y luego se convierten a segundos dividiendo por la frecuencia de muestreo.
+
+El cálculo de los intervalos R-R es fundamental para el análisis de la variabilidad de la frecuencia cardíaca (HRV), que permite evaluar el funcionamiento del sistema nervioso autónomo y la respuesta del corazón a diferentes estímulos fisiológicos y psicológicos. La HRV se considera un indicador de salud cardiovascular y se utiliza para detectar posibles anomalías en el ritmo cardíaco, lo que puede ayudar en la detección temprana de condiciones como arritmias o el riesgo de enfermedades cardíacas.
+
 <a name="intervalos"></a> 
 ## Análisis de la HRV en el dominio del tiempo
 
 ```c
+# Función para calcular parámetros de HRV
+def calcular_hrv(rr_intervals):
+    if len(rr_intervals) < 2:  # Asegura que haya suficientes intervalos R-R
+        return None, None, None, None
+    
+    # Calcula los parámetros de HRV
+    mean_rr = np.mean(rr_intervals)  # Media de intervalos R-R
+    std_rr = np.std(rr_intervals)  # Desviación estándar de intervalos R-R
+    rmssd = np.sqrt(np.mean(np.square(np.diff(rr_intervals))))  # RMSSD
+    pnn50 = np.sum(np.abs(np.diff(rr_intervals)) > 0.05) / (len(rr_intervals) - 1) * 100  # pNN50
+    
+    return mean_rr, std_rr, rmssd, pnn50  # Retorna los parámetros calculados
 
 ```
+
+Los parámetros de Variabilidad de la Frecuencia Cardíaca (HRV, por sus siglas en inglés) en el dominio del tiempo son utilizados para evaluar la salud del sistema cardiovascular y la influencia del sistema nervioso autónomo en la regulación del ritmo cardíaco. A continuación, se describen y analizan los parámetros calculados:
+
+La **media de los intervalos R-R** es de 1.671 segundos, lo que representa el tiempo promedio entre latidos consecutivos en esta señal. Este valor es un indicador básico de la frecuencia cardíaca promedio. Un valor elevado de este parámetro sugiere un ritmo cardíaco más lento (bradicardia), mientras que un valor bajo indica un ritmo cardíaco más rápido (taquicardia). En este caso, una media de 1.671 s corresponde a una frecuencia cardíaca aproximada de 36 latidos por minuto (bpm), lo cual puede ser característico de una persona en reposo o en buena forma física.
+
+La **desviación estándar de los intervalos R-R** es de 0.159 segundos. Este parámetro refleja la variabilidad en el tiempo entre los latidos y es un indicador general de la variabilidad de la frecuencia cardíaca. Valores altos de desviación estándar están asociados con una mayor variabilidad y una mejor capacidad de adaptación del sistema cardíaco ante diferentes estímulos, mientras que valores bajos podrían indicar estrés o problemas en el sistema de regulación autónomo.
+
+El **RMSSD (Root Mean Square of Successive Differences)** es de 0.163 segundos y representa la raíz cuadrada de las diferencias al cuadrado entre intervalos R-R sucesivos. Este parámetro es particularmente útil para evaluar la actividad del sistema nervioso parasimpático, el cual se asocia con el estado de relajación y recuperación del organismo. Un RMSSD elevado indica una alta influencia parasimpática, lo cual se considera positivo para la salud cardiovascular.
+
+El **pNN50** es del 37.29%, lo cual representa el porcentaje de diferencias sucesivas entre intervalos R-R que son mayores de 50 milisegundos. Este parámetro es también un reflejo de la actividad del sistema nervioso parasimpático. Valores elevados de pNN50 indican una alta variabilidad y una respuesta saludable del sistema cardiovascular ante cambios en el entorno. En este caso, un valor de 37.29% es indicativo de una buena variabilidad y un equilibrio adecuado entre las ramas simpática y parasimpática del sistema nervioso autónomo.
+
 ---
 <a name="wavelet"></a> 
 ## Aplicación de transformada Wavelet
