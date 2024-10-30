@@ -165,7 +165,39 @@ Es importante mencionar que no se registra ninguna información personal del suj
 Una vez que los datos están en Excel, se pueden importar a Python para realizar el análisis de la señal ECG. Python permite el procesamiento de la señal, la identificación de los picos R y el cálculo de los intervalos R-R, aspectos claves para el análisis de la variabilidad de la frecuencia cardíaca (HRV).
 
 ```c
+# Parámetros de simulación
+fs = 250  # Frecuencia de muestreo en Hz
+duration_target = 5 * 60  # Duración objetivo en segundos (5 minutos)
+samples_target = duration_target * fs  # Número de muestras objetivo
 
+# Función para cargar y procesar el archivo CSV de ECG
+def cargar_datos_ecg(filepath):
+    try:
+        ecg_data = pd.read_csv(filepath, skiprows=1, names=['Elapsed_time', 'ECG'], quotechar="'")
+        ecg_data['Elapsed_time'] = pd.to_numeric(ecg_data['Elapsed_time'], errors='coerce')
+        ecg_data['ECG'] = pd.to_numeric(ecg_data['ECG'], errors='coerce')
+        ecg_data.dropna(inplace=True)
+        
+        # Extender la señal para que dure al menos 5 minutos
+        ecg_signal = np.tile(ecg_data['ECG'].values, (samples_target // len(ecg_data) + 1))[:samples_target]
+        ecg_data = pd.DataFrame({'Elapsed_time': np.arange(len(ecg_signal)) / fs, 'ECG': ecg_signal})
+        
+        return ecg_data
+    except Exception as e:
+        print("Error al cargar el archivo de ECG:", e)
+        return None
+
+# Función para graficar señal cruda
+def graficar_senal_cruda(ecg_signal):
+    tiempo = np.arange(len(ecg_signal)) / fs
+    plt.figure(figsize=(12, 4))
+    plt.plot(tiempo, ecg_signal, label='Señal ECG cruda')
+    plt.title("Señal ECG cruda")
+    plt.xlim(0,30)
+    plt.xlabel("Tiempo (s)")
+    plt.ylabel("Amplitud")
+    plt.legend()
+    plt.show()
 ```
 ---
 <a name="filtros"></a> 
