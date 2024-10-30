@@ -103,11 +103,12 @@ Este diagrma representa el plan de acción para cumplir el objetivo de la práct
 ## Librerias
 
 ```c
-import numpy as np
-import pandas as pd
-import scipy.signal as signal
-import pywt
-import matplotlib.pyplot as plt
+import numpy as np  # Importa la biblioteca NumPy para operaciones numéricas
+import pandas as pd  # Importa la biblioteca Pandas para manipulación de datos
+import scipy.signal as signal  # Importa la subbiblioteca de señales de SciPy para el procesamiento de señales
+import pywt  # Importa PyWavelets para análisis de wavelets
+import matplotlib.pyplot as plt  # Importa Matplotlib para la visualización de datos
+
 ```
 ### 1. `import numpy as np`
 
@@ -173,31 +174,38 @@ samples_target = duration_target * fs  # Número de muestras objetivo
 # Función para cargar y procesar el archivo CSV de ECG
 def cargar_datos_ecg(filepath):
     try:
+        # Carga el archivo CSV, omitiendo la primera fila y nombrando las columnas
         ecg_data = pd.read_csv(filepath, skiprows=1, names=['Elapsed_time', 'ECG'], quotechar="'")
+        
+        # Convierte las columnas a tipo numérico, ignorando errores
         ecg_data['Elapsed_time'] = pd.to_numeric(ecg_data['Elapsed_time'], errors='coerce')
         ecg_data['ECG'] = pd.to_numeric(ecg_data['ECG'], errors='coerce')
+        
+        # Elimina las filas con valores NaN
         ecg_data.dropna(inplace=True)
         
         # Extender la señal para que dure al menos 5 minutos
         ecg_signal = np.tile(ecg_data['ECG'].values, (samples_target // len(ecg_data) + 1))[:samples_target]
+        
+        # Crea un nuevo DataFrame con el tiempo y la señal ECG
         ecg_data = pd.DataFrame({'Elapsed_time': np.arange(len(ecg_signal)) / fs, 'ECG': ecg_signal})
         
-        return ecg_data
+        return ecg_data  # Devuelve el DataFrame procesado
     except Exception as e:
-        print("Error al cargar el archivo de ECG:", e)
-        return None
+        print("Error al cargar el archivo de ECG:", e)  # Maneja excepciones
+        return None  # Retorna None si hay un error
 
-# Función para graficar señal cruda
+# Función para graficar la señal cruda
 def graficar_senal_cruda(ecg_signal):
-    tiempo = np.arange(len(ecg_signal)) / fs
-    plt.figure(figsize=(12, 4))
-    plt.plot(tiempo, ecg_signal, label='Señal ECG cruda')
-    plt.title("Señal ECG cruda")
-    plt.xlim(0,30)
-    plt.xlabel("Tiempo (s)")
-    plt.ylabel("Amplitud")
-    plt.legend()
-    plt.show()
+    tiempo = np.arange(len(ecg_signal)) / fs  # Calcula el tiempo correspondiente a cada muestra
+    plt.figure(figsize=(12, 4))  # Crea una figura para la gráfica
+    plt.plot(tiempo, ecg_signal, label='Señal ECG cruda')  # Grafica la señal ECG
+    plt.title("Señal ECG cruda")  # Título de la gráfica
+    plt.xlim(0, 30)  # Limita el eje x a 30 segundos
+    plt.xlabel("Tiempo (s)")  # Etiqueta del eje x
+    plt.ylabel("Amplitud")  # Etiqueta del eje y
+    plt.legend()  # Muestra la leyenda
+    plt.show()  # Muestra la gráfica
 ```
 ![image](https://github.com/user-attachments/assets/c27c8e34-875c-4a06-87de-ab1273b6b2e1)
 
@@ -224,10 +232,11 @@ En conjunto, las características de la señal y sus estadísticos indican que e
 ```c
 # Calcular características de la señal
 def calcular_caracteristicas(ecg_data):
-    frecuencia_muestreo = fs
-    tiempo_muestreo = 1 / frecuencia_muestreo
-    niveles_cuantificacion = len(np.unique(ecg_data['ECG'].round(3)))
+    frecuencia_muestreo = fs  # Almacena la frecuencia de muestreo
+    tiempo_muestreo = 1 / frecuencia_muestreo  # Calcula el tiempo de muestreo
+    niveles_cuantificacion = len(np.unique(ecg_data['ECG'].round(3)))  # Niveles de cuantificación
 
+    # Calcula estadísticos principales de la señal
     estadisticos = {
         'Media': np.mean(ecg_data['ECG']),
         'Desviación estándar': np.std(ecg_data['ECG']),
@@ -236,7 +245,8 @@ def calcular_caracteristicas(ecg_data):
         'Mediana': np.median(ecg_data['ECG'])
     }
 
-    return frecuencia_muestreo, tiempo_muestreo, niveles_cuantificacion, estadisticos
+    return frecuencia_muestreo, tiempo_muestreo, niveles_cuantificacion, estadisticos  # Retorna las características
+
 ```
 ---
 <a name="filtros"></a> 
