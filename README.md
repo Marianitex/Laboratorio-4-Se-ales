@@ -199,6 +199,45 @@ def graficar_senal_cruda(ecg_signal):
     plt.legend()
     plt.show()
 ```
+![image](https://github.com/user-attachments/assets/c27c8e34-875c-4a06-87de-ab1273b6b2e1)
+
+La señal mostrada es una señal ECG en estado crudo que se ha adquirido, al agregar el número 6 en el menú, se puede acceder a todas las características detalladas de la señal ECG, incluyendo la frecuencia de muestreo (250 Hz), el tiempo de muestreo (0.004 s), los niveles de cuantificación (914), y los estadísticos principales (media, desviación estándar, mínimo, máximo y mediana). Esta opción del menú permite visualizar fácilmente estos parámetros para una comprensión más clara de la señal y su calidad, lo cual es útil para verificar si los datos cumplen con los requisitos necesarios para el análisis posterior.
+
+### Características de la señal:
+1. **Frecuencia de muestreo (250 Hz)**: La frecuencia de muestreo determina la cantidad de muestras que se toman por segundo. En este caso, 250 muestras por segundo son suficientes para capturar los picos y variaciones de la señal ECG, permitiendo observar el ciclo cardíaco de manera detallada.
+
+2. **Tiempo de muestreo (0.004 s)**: El tiempo de muestreo, que es el inverso de la frecuencia de muestreo, indica el intervalo de tiempo entre cada muestra (4 milisegundos). Esto es importante porque define la resolución temporal de la señal.
+
+3. **Niveles de cuantificación (914)**: La cuantificación es el número de niveles que el convertidor analógico-digital (ADC) utiliza para representar el valor de la señal. Con 914 niveles, se tiene una precisión suficiente para capturar la amplitud de la señal ECG sin pérdida significativa de información.
+
+### Estadísticos principales de la señal:
+- **Media (-0.022)**: La media indica el valor promedio de la señal. En este caso, la media es cercana a cero, lo cual es común en señales de ECG después de eliminar los posibles valores de offset de la señal.
+- **Desviación estándar (0.169)**: La desviación estándar refleja la variabilidad de la señal alrededor de la media. Este valor indica que la señal tiene variaciones moderadas en torno a su valor promedio.
+- **Mínimo (-0.500) y Máximo (1.129)**: Estos valores representan el rango de amplitud de la señal. El valor máximo corresponde a los picos R (los puntos más altos de la señal ECG), mientras que el mínimo puede indicar puntos bajos entre latidos.
+- **Mediana (-0.043)**: La mediana es un valor que divide la señal en dos mitades, indicando que el 50% de las muestras están por encima de este valor y el otro 50% por debajo. Este valor también es cercano a cero, lo cual es típico en una señal ECG bien centrada.
+
+### Análisis de la señal:
+La señal ECG capturada muestra los picos característicos de una señal cardíaca, con los picos R claramente visibles en la gráfica. La media cercana a cero sugiere que la señal está centrada, lo cual facilita su análisis. La amplitud máxima de 1.129 y el mínimo de -0.500 indican que la señal tiene un buen rango de amplitud, permitiendo observar los diferentes componentes del ECG, como las ondas P, QRS, y T.
+
+En conjunto, las características de la señal y sus estadísticos indican que es una señal bien adquirida y adecuada para su posterior procesamiento y análisis, como el cálculo de la variabilidad de la frecuencia cardíaca (HRV) y otros análisis de dominio de tiempo o frecuencia.
+
+```c
+# Calcular características de la señal
+def calcular_caracteristicas(ecg_data):
+    frecuencia_muestreo = fs
+    tiempo_muestreo = 1 / frecuencia_muestreo
+    niveles_cuantificacion = len(np.unique(ecg_data['ECG'].round(3)))
+
+    estadisticos = {
+        'Media': np.mean(ecg_data['ECG']),
+        'Desviación estándar': np.std(ecg_data['ECG']),
+        'Mínimo': np.min(ecg_data['ECG']),
+        'Máximo': np.max(ecg_data['ECG']),
+        'Mediana': np.median(ecg_data['ECG'])
+    }
+
+    return frecuencia_muestreo, tiempo_muestreo, niveles_cuantificacion, estadisticos
+```
 ---
 <a name="filtros"></a> 
 ## Pre-procesamiento de la señal
