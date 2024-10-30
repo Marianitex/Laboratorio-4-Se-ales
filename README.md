@@ -53,7 +53,7 @@ Octubre 2024
 2. **Análisis de las Frecuencias en el Tiempo:**
    - Observa cómo cambian las frecuencias de HRV en el espectrograma y analiza cualquier variación en la potencia espectral.
    - Compara las diferencias entre la banda de baja frecuencia y la de alta frecuencia, describiendo cualquier patrón notable y los posibles efectos de la actividad simpática y parasimpática en estas frecuencias.
-
+---
 <a name="teorico"></a> 
 ## Fundamento teorico
 
@@ -91,25 +91,25 @@ La **transformada wavelet** es una técnica matemática que permite analizar có
    - **Wavelet de Daubechies**: Permite captar variaciones rápidas y ayuda en la detección de picos en señales como el ECG.
 
 La transformada wavelet es una herramienta poderosa para entender mejor cómo el cuerpo cambia y reacciona en diferentes situaciones.
-
+---
 <a name="diagrama"></a> 
 ## Diagrama de flujo
 
-
+---
 <a name="aadquisicion"></a> 
 ## Adquisicion de la señal
 
 ```c
 
 ```
-
+---
 <a name="librerias"></a> 
 ## Librerias
 
 ```c
 
 ```
-
+---
 <a name="filtros"></a> 
 ## Pre-procesamiento de la señal
 
@@ -123,20 +123,21 @@ La transformada wavelet es una herramienta poderosa para entender mejor cómo el
 ```c
 
 ```
-
+---
 <a name="wavelet"></a> 
 ## Aplicación de transformada Wavelet
 
 ```c
 
 ```
+---
 <a name="menu"></a> 
 ## Menu
 
 ```c
 
 ```
-
+---
 <a name="contacto"></a> 
 ## Contacto
 * Creado por [Marianitex](https://github.com/Marianitex) - sígueme en mis redes sociales como @_mariana.higuera
