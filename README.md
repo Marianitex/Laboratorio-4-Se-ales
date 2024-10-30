@@ -94,10 +94,34 @@ La transformada wavelet es una herramienta poderosa para entender mejor cómo el
 ---
 <a name="diagrama"></a> 
 ## Diagrama de flujo
+Este diagrma representa el plan de acción para cumplir el objetivo de la práctica:
+
+
 
 ---
 <a name="aadquisicion"></a> 
 ## Adquisicion de la señal
+
+Para la adquisición de la señal ECG (electrocardiograma) usando un microcontrolador **STM32** y un módulo **AD8232**, el proceso se estructura en varios pasos para obtener una señal clara, almacenarla en **Excel** y luego analizarla en **Python**. La configuración específica de la señal incluye una **frecuencia de muestreo de 250 Hz**, lo que corresponde a un **tiempo de muestreo de 0.004 segundos** y **914 niveles de cuantificación** para captar con precisión las variaciones de la señal ECG.
+
+El primer paso consiste en conectar el módulo AD8232 al STM32. El AD8232 es un sensor que mide la actividad eléctrica del corazón de manera segura y precisa. Esta conexión se realiza mediante cables, de forma que las salidas de datos del AD8232 queden enlazadas a los pines de entrada analógica del STM32, que recibirá la señal ECG.
+
+![Imagen de WhatsApp 2024-10-30 a las 17 23 17_e598c08d](https://github.com/user-attachments/assets/622b380d-96c5-42ef-b14e-729c3d699edd)
+
+Luego, es necesario configurar el STM32 para que lea la señal proveniente del AD8232. Esto implica programar el puerto de entrada analógica del STM32 para que procese la señal de voltaje del módulo, representando la actividad del corazón. Además, se define la frecuencia de muestreo de 250 Hz y el tiempo de muestreo de 0.004 segundos, que garantiza una captura precisa de la señal ECG. También se configura el STM32 para procesar la señal de entrada, minimizando la interferencia o ruido antes de almacenar los datos.
+
+Para asegurar la calidad de la señal, se deben tomar medidas para reducir el ruido durante la captura. Esto incluye el uso de cables cortos, evitar movimientos durante la medición y realizar el registro en un ambiente con baja interferencia eléctrica. La persona debe permanecer en **reposo** durante los **5 minutos** de grabación para obtener una señal estable y clara.
+
+El almacenamiento de datos es el siguiente paso. El STM32 procesa la señal y la envía a una computadora mediante una conexión serial (como **UART** o **USB**), lo cual permite la transmisión de la señal desde el STM32 a la computadora. En la computadora, un programa (como en **Python** o con software del STM32) captura los datos y los guarda en un archivo **Excel** para facilitar su posterior análisis. Para visualizar esta señal en el sistema de adquisición, se puede acceder a través del menú introduciendo el número "1".
+
+![Imagen de WhatsApp 2024-10-30 a las 17 23 17_952178e8](https://github.com/user-attachments/assets/cd8ccf8f-18ff-4b51-b109-38af0b5427bf)
+
+
+En Excel, los datos se organizan en filas, donde cada una representa una lectura de la señal ECG en el tiempo. La primera columna puede corresponder al **tiempo**, y la segunda columna, al **valor de voltaje** de cada muestra de ECG. Esta organización facilita la carga y el análisis en **Python**.
+
+Es importante mencionar que no se registra ninguna información personal del sujeto de prueba. Solo se almacenan los datos de la señal ECG sin asociarlos a ninguna identificación para garantizar la **confidencialidad** y proteger la **privacidad** del participante.
+
+Una vez que los datos están en Excel, se pueden importar a Python para realizar el análisis de la señal ECG. Python permite el procesamiento de la señal, la identificación de los picos R y el cálculo de los intervalos R-R, aspectos claves para el análisis de la variabilidad de la frecuencia cardíaca (HRV).
 
 ```c
 
