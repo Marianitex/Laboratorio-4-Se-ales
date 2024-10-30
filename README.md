@@ -59,39 +59,45 @@ Octubre 2024
 
 Antes de iniciar la práctica, se realizo una investigación teórica de los siguientes temas:
 
-### 1. **Actividad simpática y parasimpática del sistema nervioso autónomo**
-   - **Sistema Nervioso Autónomo (SNA)**: El SNA regula funciones involuntarias como la frecuencia cardíaca, la digestión y la respiración.
-   ![image](https://github.com/user-attachments/assets/277d8c0c-7e45-4618-ac94-de76c42777ae)
-   Se divide en:
-      - **Simpático**: Activa respuestas de "lucha o huida". Prepara al cuerpo para situaciones de estrés o emergencia, incrementando la frecuencia cardíaca, la presión arterial y la liberación de glucosa.
-      - **Parasimpático**: Promueve el estado de "descanso y digestión", reduciendo la frecuencia cardíaca y facilitando funciones regenerativas.
-   - **Balance entre simpático y parasimpático**: La interacción entre ambas actividades regula la homeostasis corporal. Estos sistemas actúan de manera complementaria para mantener el equilibrio fisiológico.
+### Actividad simpática y parasimpática del sistema nervioso autónomo
+El **Sistema Nervioso Autónomo** se encarga de controlar automáticamente funciones importantes del cuerpo, como la respiración, los latidos del corazón y la digestión, sin que la persona tenga que pensarlo. Este sistema tiene dos partes principales:
+- **Actividad simpática**: Es el sistema de “modo acción”. Se activa cuando el cuerpo necesita energía rápida para enfrentar algo, como en situaciones de estrés, miedo o ejercicio. Hace que el corazón lata más rápido y que el cuerpo esté listo para reaccionar.
+- **Actividad parasimpática**: Es el sistema de “modo descanso”. Se activa cuando el cuerpo necesita relajarse y recuperar fuerzas, como al descansar después de comer o antes de dormir. Hace que el corazón lata más despacio y ayuda en procesos como la digestión.
 
-### 2. **Efecto de la actividad simpática y parasimpática en la frecuencia cardíaca**
-   - **Efecto simpático**: Al activarse, el sistema simpático libera noradrenalina y epinefrina, que estimulan los receptores adrenérgicos del corazón, aumentando la frecuencia y la contractilidad cardíaca.
-   - **Efecto parasimpático**: A través de la liberación de acetilcolina, el sistema parasimpático actúa sobre los receptores muscarínicos en el corazón, reduciendo la frecuencia cardíaca.
-   - **Balance entre ambos efectos**: La variabilidad de la frecuencia cardíaca (HRV) refleja este balance, indicando el nivel de adaptabilidad del organismo. Cuando el sistema simpático domina, se observa un incremento en la frecuencia cardíaca, mientras que la activación parasimpática provoca su reducción.
-
-### 3. **Variabilidad de la frecuencia cardiaca (HRV) y fluctuaciones en el intervalo R-R**
-   - **Definición de HRV**: La HRV mide la variación temporal entre intervalos R-R consecutivos en un electrocardiograma (ECG). Es un indicador de la actividad autónoma sobre el corazón y de la capacidad de adaptación del sistema cardiovascular.
-   - **Análisis en el dominio del tiempo y la frecuencia**: 
-      - **Dominio del tiempo**: Se analizan métricas como la media de los intervalos R-R y su desviación estándar.
-      - **Dominio de la frecuencia**: Incluye bandas de baja frecuencia (LF, 0.04-0.15 Hz) asociadas a la actividad simpática y bandas de alta frecuencia (HF, 0.15-0.4 Hz) relacionadas con el parasimpático.
-   - **Importancia del análisis de HRV**: Permite evaluar el equilibrio autonómico. Altos valores de HRV reflejan una buena capacidad de adaptación del sistema cardiovascular, mientras que valores bajos pueden indicar estrés, enfermedad o desregulación autonómica.
-
-### 4. **Transformada Wavelet: definición, usos y tipos de wavelet en señales biológicas**
-   - **Definición**: La transformada wavelet es una herramienta de análisis que permite estudiar señales en función del tiempo y la frecuencia simultáneamente. A diferencia de la transformada de Fourier, que ofrece sólo información de frecuencia, la wavelet permite capturar variaciones temporales en las frecuencias de una señal.
-   - **Usos en señales biológicas**: 
-      - Análisis de señales ECG para identificar variaciones en la HRV.
-      - Detección de cambios en la potencia espectral a lo largo del tiempo, útil en estudios de actividad autonómica.
-   - **Tipos de wavelets comunes en biología**:
-      - **Wavelet de Morlet**: Ofrece buena resolución en tiempo y frecuencia, útil para análisis de HRV.
-      - **Wavelet de Daubechies**: Adecuada para capturar señales no estacionarias y variaciones rápidas, usada en la detección de picos y análisis de ECG.
-   - **Selección de la wavelet**: La elección depende del tipo de señal y del análisis deseado. Las wavelets Morlet y Daubechies son comunes en biología por su precisión en señales fisiológicas complejas.
+Estas dos partes trabajan juntas y se equilibran según lo que el cuerpo necesite en cada momento.
 
 ---
 
-Estos temas te proporcionarán una base teórica sólida para realizar la práctica sobre variabilidad de la frecuencia cardíaca y su análisis usando la transformada wavelet.
+### Efecto de la actividad simpática y parasimpática en la frecuencia cardíaca
+La **frecuencia cardíaca** es la velocidad a la que late el corazón. La actividad simpática y la parasimpática afectan esta frecuencia de diferentes maneras:
+- **Actividad simpática**: Aumenta la frecuencia cardíaca. Esto es útil cuando la persona necesita estar alerta o reaccionar rápidamente.
+- **Actividad parasimpática**: Reduce la frecuencia cardíaca, ayudando al cuerpo a descansar y recuperarse.
+
+Cuando estos dos sistemas funcionan bien juntos, mantienen la frecuencia cardíaca en un rango saludable que varía según las necesidades del cuerpo en cada situación.
+
+---
+
+### Variabilidad de la frecuencia cardíaca (HRV)
+La **variabilidad de la frecuencia cardíaca (HRV)** mide los cambios en el tiempo que pasa entre cada latido del corazón. Esta variabilidad se observa en los intervalos R-R, que son los tiempos entre los picos más altos de cada latido en un electrocardiograma (ECG). 
+- **¿Por qué es importante?** La HRV muestra el equilibrio entre los sistemas simpático y parasimpático. Por ejemplo, una buena variabilidad indica que el cuerpo puede adaptarse bien a diferentes situaciones, mientras que una baja variabilidad podría señalar que el cuerpo está bajo mucho estrés o no se adapta bien a los cambios.
+- **Frecuencias de interés**: En el análisis de HRV, hay dos tipos de frecuencias importantes:
+   - **Baja frecuencia (LF)**: Relacionada con la actividad simpática.
+   - **Alta frecuencia (HF)**: Relacionada con la actividad parasimpática.
+
+Estas frecuencias ayudan a entender cómo están funcionando los sistemas simpático y parasimpático en el cuerpo.
+
+---
+
+### Transformada Wavelet: definición, usos y tipos de wavelet en señales biológicas
+La **transformada wavelet** es una técnica matemática que permite analizar cómo cambia una señal en el tiempo y en la frecuencia al mismo tiempo. Es especialmente útil para estudiar señales complejas, como las del cuerpo, que varían rápidamente.
+- **¿Qué hace?** Permite observar detalles en diferentes momentos de una señal (como un ECG) y ver cómo cambia a lo largo del tiempo.
+- **Usos en biología**: En el análisis de señales biológicas, la transformada wavelet permite identificar patrones y cambios que pueden ser muy pequeños o rápidos, como variaciones en los latidos del corazón.
+- **Tipos de wavelet**:
+   - **Wavelet de Morlet**: Ofrece una buena resolución tanto en tiempo como en frecuencia y es útil en el análisis de señales biológicas.
+   - **Wavelet de Daubechies**: Permite captar variaciones rápidas y ayuda en la detección de picos en señales como el ECG.
+
+La transformada wavelet es una herramienta poderosa para entender mejor cómo el cuerpo cambia y reacciona en diferentes situaciones.
+
 
 <a name="diagrama"></a> 
 ## Diagrama de flujo
