@@ -96,7 +96,8 @@ La transformada wavelet es una herramienta poderosa para entender mejor cómo el
 ## Diagrama de flujo
 Este diagrma representa el plan de acción para cumplir el objetivo de la práctica:
 
-
+![1](https://github.com/user-attachments/assets/8d45f62c-dcb5-484c-9384-999190227936)
+![2](https://github.com/user-attachments/assets/cc76493b-0802-4443-9de9-60a9757bc208)
 
 ---
 <a name="librerias"></a> 
@@ -351,9 +352,18 @@ El **pNN50** es del 37.29%, lo cual representa el porcentaje de diferencias suce
 <a name="wavelet"></a> 
 ## Aplicación de transformada Wavelet
 
-```c
+![image](https://github.com/user-attachments/assets/b148f17e-8ac6-4aca-8875-833016c11338)
 
+```c
+# Función para aplicar la Transformada Wavelet Continua (CWT) con Morlet
+def aplicar_wavelet(rr_intervals, fs):
+    scales = np.arange(1, 128)  # Define las escalas para la transformada
+    cwtmatr, freqs = pywt.cwt(rr_intervals, wavelet='cmor1.0-6.0', scales=scales, sampling_period=1/fs)  # Aplica CWT
+    return cwtmatr, freqs  # Retorna la matriz CWT y las frecuencias
 ```
+
+
+
 ---
 <a name="menu"></a> 
 ## Menu
