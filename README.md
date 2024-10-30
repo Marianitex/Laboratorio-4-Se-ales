@@ -361,16 +361,169 @@ def aplicar_wavelet(rr_intervals, fs):
     cwtmatr, freqs = pywt.cwt(rr_intervals, wavelet='cmor1.0-6.0', scales=scales, sampling_period=1/fs)  # Aplica CWT
     return cwtmatr, freqs  # Retorna la matriz CWT y las frecuencias
 ```
+Claro, aquí tienes la descripción dividida en párrafos:
 
+---
 
+1. **Selección de Wavelet**: La elección de un wavelet de tipo Morlet es adecuada para este tipo de análisis debido a su capacidad para captar variaciones de frecuencia en señales no estacionarias, como la señal de ECG. El wavelet Morlet permite un buen equilibrio entre resolución temporal y frecuencia, lo cual facilita identificar variaciones en la frecuencia cardíaca a lo largo del tiempo. Esta característica es fundamental para estudiar señales complejas que contienen variaciones tanto en baja como en alta frecuencia.
+
+2. **Análisis en Bandas de Frecuencia**:
+   - **Baja Frecuencia (0.04-0.15 Hz)**: En el espectrograma, las variaciones en baja frecuencia están relacionadas con la actividad combinada del sistema nervioso simpático y parasimpático. Aunque estas frecuencias específicas no se muestran directamente en esta escala, un análisis ampliado podría capturar modulaciones que reflejan cambios lentos en la variabilidad de la frecuencia cardíaca (HRV), como aquellos asociados a respuestas fisiológicas de largo plazo.
+   - **Alta Frecuencia (15-50 Hz)**: Esta banda de frecuencia corresponde principalmente a las variaciones rápidas en la HRV, que están directamente relacionadas con la respiración (componente parasimpático). En el espectrograma, las zonas de alta potencia espectral (en rojo) en esta banda reflejan intervalos de alta actividad rítmica en la HRV, lo que podría indicar períodos de respiración controlada o aumentos en la respuesta del sistema parasimpático.
+
+3. **Variación en el Tiempo**:
+   - El espectrograma muestra zonas de mayor y menor potencia espectral a lo largo del tiempo. Los cambios en la potencia en ambas bandas sugieren variaciones en la actividad del sistema nervioso autónomo, lo cual podría estar relacionado con respuestas fisiológicas del paciente, como períodos de estrés o de relajación. La modulación temporal de la potencia espectral permite visualizar cómo la actividad cardíaca se adapta en diferentes intervalos de tiempo.
+   - Las áreas de color rojo representan intervalos con mayor potencia espectral, lo que podría señalar momentos de actividad cardíaca elevada o ritmos respiratorios más intensos. Esto ayuda a identificar patrones específicos de respuesta autónoma en la señal de HRV, reflejando posiblemente cambios en el estado fisiológico del individuo.
 
 ---
 <a name="menu"></a> 
 ## Menu
 
 ```c
+# Menú interactivo con opción para calcular características
+def main_menu():
+    print("---- Análisis de señal ECG y HRV ----")  # Título del menú
+    print("1. Ver señal cruda ECG")  # Opción para ver señal cruda
+    print("2. Filtrar señal ECG")  # Opción para filtrar señal
+    print("3. Detectar picos R y calcular intervalos R-R")  # Opción para detectar picos
+    print("4. Calcular parámetros de HRV en el dominio del tiempo")  # Opción para calcular HRV
+    print("5. Aplicar Transformada Wavelet (Morlet)")  # Opción para aplicar wavelet
+    print("6. Calcular características de la señal")  # Opción para calcular características
+    print("7. Salir")  # Opción para salir
+    return input("Seleccione una opción (1-7): ")  # Solicita al usuario una opción
+
+def run_analysis():
+    filepath = "deisiECG.csv"  # Ruta del archivo de ECG
+    ecg_data = cargar_datos_ecg(filepath)  # Carga los datos ECG
+    if ecg_data is None:  # Verifica si los datos se cargaron correctamente
+        print("Error al cargar los datos. Asegúrese de que el archivo tenga el formato correcto.")
+        return  # Sale si hay error
+
+    ecg_signal = ecg_data['ECG'].values  # Obtiene la señal ECG
+    ecg_filtered = None  # Inicializa la señal filtrada
+    peaks = None  # Inicializa los picos
+    rr_intervals = None  # Inicializa los intervalos R-R
+
+    while True:  # Bucle principal para el menú
+        option = main_menu()  # Muestra el menú y obtiene la opción
+        
+        if option == '1':
+            graficar_senal_cruda(ecg_signal)  # Grafica la señal cruda
+            print("Señal ECG cruda mostrada.")
+        
+        elif option == '2':
+            ecg_filtered = filtrar_senal(ecg_signal, fs)  # Filtra la señal ECG
+            plt.figure(figsize=(12, 4))
+            plt.plot(ecg_filtered, label='ECG Filtrada')  # Grafica la señal filtrada
+            plt.title("Señal ECG Filtrada")
+            plt.xlabel("Muestras")
+            plt.xlim(0, 5000)  # Limita el eje x a 5000 muestras
+            plt.ylabel("Amplitud")
+            plt.legend()
+            plt.show()
+            print("Señal ECG filtrada correctamente.")
+        
+        elif option == '3':
+            if ecg_filtered is None:  # Verifica si la señal ha sido filtrada
+                print("Primero debe filtrar la señal (opción 2).")
+            else:
+                peaks, rr_intervals = detectar_picos_rr(ecg_filtered, fs)  # Detecta picos R
+                plt.figure(figsize=(12, 4))
+                plt.plot(ecg_filtered, label='ECG Filtrada')  # Grafica la señal filtrada
+                plt.plot(peaks, ecg_filtered[peaks], 'ro', label='Picos R')  # Marca los picos R
+                plt.title("Detección de Picos R")
+                plt.xlabel("Muestras")
+                plt.xlim(0, 5000)  # Limita el eje x a 5000 muestras
+                plt.ylabel("Amplitud")
+                plt.legend()
+                plt.show()
+                print("Picos R detectados e intervalos R-R calculados.")
+        
+        elif option == '4':
+            if rr_intervals is None:  # Verifica si los intervalos R-R han sido calculados
+                print("Primero debe detectar los picos R y calcular intervalos R-R (opción 3).")
+            else:
+                # Calcula y muestra parámetros de HRV
+                mean_rr, std_rr, rmssd, pnn50 = calcular_hrv(rr_intervals)
+                print("Parámetros de HRV en el dominio del tiempo:")
+                print(f"Media de intervalos R-R: {mean_rr:.3f} s")
+                print(f"Desviación estándar de intervalos R-R: {std_rr:.3f} s")
+                print(f"RMSSD: {rmssd:.3f} s")
+                print(f"pNN50: {pnn50:.2f}%")
+        
+        elif option == '5':
+            if rr_intervals is None:  # Verifica si los intervalos R-R han sido calculados
+                print("Primero debe detectar los picos R y calcular intervalos R-R (opción 3).")
+            else:
+                cwtmatr, freqs = aplicar_wavelet(rr_intervals, fs)  # Aplica la Transformada Wavelet
+                plt.figure(figsize=(10, 6))
+                plt.imshow(np.abs(cwtmatr), extent=[0, len(rr_intervals), freqs[-1], freqs[0]], aspect='auto', cmap='jet')  # Muestra el espectrograma
+                plt.colorbar(label="Potencia")  # Añade barra de color
+                plt.title("Espectrograma Wavelet de la HRV (Morlet)")
+                plt.xlabel("Tiempo")
+                plt.ylabel("Frecuencia (Hz)")
+                plt.show()
+                print("Transformada Wavelet aplicada y espectrograma mostrado.")
+        
+        elif option == '6':
+            # Calcula y muestra características de la señal ECG
+            frecuencia_muestreo, tiempo_muestreo, niveles_cuantificacion, estadisticos = calcular_caracteristicas(ecg_data)
+            print("Características de la señal ECG:")
+            print(f"Frecuencia de muestreo: {frecuencia_muestreo} Hz")
+            print(f"Tiempo de muestreo: {tiempo_muestreo:.6f} s")
+            print(f"Niveles de cuantificación: {niveles_cuantificacion}")
+            print("Estadísticos principales de la señal:")
+            for key, value in estadisticos.items():
+                print(f"{key}: {value:.3f}")
+        
+        elif option == '7':
+            print("Saliendo del programa.")  # Mensaje de salida
+            break  # Sale del bucle y finaliza el programa
+        
+        else:
+            print("Opción no válida. Intente de nuevo.")  # Mensaje de error si la opción es inválida
+
+# Ejecutar el menú
+run_analysis()  # Inicia el análisis
 
 ```
+
+Este menú interactivo es parte de un programa en Python diseñado para analizar señales ECG (Electrocardiograma) y HRV (Variabilidad de la Frecuencia Cardíaca) y consta de varias opciones que permiten aplicar diferentes análisis y transformaciones a los datos. A continuación, se explica cada opción y la funcionalidad de este menú paso a paso:
+
+1. **Título del Menú**: 
+   Al inicio, se muestra un título que indica que este es un "Análisis de señal ECG y HRV".
+
+2. **Opción 1 - Ver señal cruda ECG**:
+   Esta opción permite visualizar la señal de ECG sin ningún tipo de procesamiento o filtrado. Al seleccionarla, se grafica la señal cruda para inspeccionarla visualmente.
+
+3. **Opción 2 - Filtrar señal ECG**:
+   Filtra la señal de ECG para eliminar ruido o componentes no deseados. Una vez seleccionada, aplica un filtro (presumiblemente un filtro pasa-banda o similar) y muestra la señal filtrada en una gráfica limitada a 5000 muestras para enfocarse en un segmento específico de la señal.
+
+4. **Opción 3 - Detectar picos R y calcular intervalos R-R**:
+   Esta opción permite detectar los picos R en la señal ECG (picos principales que representan la contracción del corazón) y calcular los intervalos R-R, que son los tiempos entre picos R consecutivos. Este análisis es fundamental para la evaluación de la HRV. La señal con los picos R detectados se muestra gráficamente. Si la señal no ha sido filtrada previamente (opción 2), muestra un mensaje pidiendo que se filtre antes de realizar este análisis.
+
+5. **Opción 4 - Calcular parámetros de HRV en el dominio del tiempo**:
+   Utilizando los intervalos R-R calculados en la opción anterior, esta opción calcula parámetros de HRV en el dominio temporal, como:
+   - **Media de intervalos R-R**: Tiempo promedio entre picos R.
+   - **Desviación estándar de intervalos R-R**: Variabilidad de estos intervalos.
+   - **RMSSD**: Raíz cuadrada de la media de las diferencias al cuadrado entre intervalos sucesivos R-R.
+   - **pNN50**: Porcentaje de diferencias entre intervalos R-R mayores de 50 ms, que refleja la actividad parasimpática.
+
+6. **Opción 5 - Aplicar Transformada Wavelet (Morlet)**:
+   Esta opción permite aplicar la Transformada Wavelet, en particular utilizando el wavelet de Morlet, a los intervalos R-R. La Transformada Wavelet ayuda a descomponer la señal en distintas frecuencias y visualizar cómo varían a lo largo del tiempo. El resultado se muestra en un espectrograma, donde la potencia en cada frecuencia se representa en un mapa de color.
+
+7. **Opción 6 - Calcular características de la señal**:
+   Calcula características adicionales de la señal de ECG, tales como:
+   - **Frecuencia de muestreo**: Cantidad de muestras tomadas por segundo.
+   - **Tiempo de muestreo**: Intervalo de tiempo entre muestras consecutivas.
+   - **Niveles de cuantificación**: Número de valores distintos posibles para las amplitudes en la señal digitalizada.
+   - **Estadísticos principales**: Calcula valores como la media, desviación estándar, etc., para obtener una visión general de la señal.
+
+8. **Opción 7 - Salir**:
+   Esta opción permite salir del programa y finalizar el análisis. 
+
+9. **Validación de Opciones**:
+   Si el usuario introduce una opción no válida, se muestra un mensaje de error y el menú se repite hasta que se seleccione una opción válida.
 ---
 <a name="contacto"></a> 
 ## Contacto
