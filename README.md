@@ -66,16 +66,12 @@ El **Sistema Nervioso Autónomo** se encarga de controlar automáticamente funci
 
 Estas dos partes trabajan juntas y se equilibran según lo que el cuerpo necesite en cada momento.
 
----
-
 ### Efecto de la actividad simpática y parasimpática en la frecuencia cardíaca
 La **frecuencia cardíaca** es la velocidad a la que late el corazón. La actividad simpática y la parasimpática afectan esta frecuencia de diferentes maneras:
 - **Actividad simpática**: Aumenta la frecuencia cardíaca. Esto es útil cuando la persona necesita estar alerta o reaccionar rápidamente.
 - **Actividad parasimpática**: Reduce la frecuencia cardíaca, ayudando al cuerpo a descansar y recuperarse.
 
 Cuando estos dos sistemas funcionan bien juntos, mantienen la frecuencia cardíaca en un rango saludable que varía según las necesidades del cuerpo en cada situación.
-
----
 
 ### Variabilidad de la frecuencia cardíaca (HRV)
 La **variabilidad de la frecuencia cardíaca (HRV)** mide los cambios en el tiempo que pasa entre cada latido del corazón. Esta variabilidad se observa en los intervalos R-R, que son los tiempos entre los picos más altos de cada latido en un electrocardiograma (ECG). 
@@ -86,8 +82,6 @@ La **variabilidad de la frecuencia cardíaca (HRV)** mide los cambios en el tiem
 
 Estas frecuencias ayudan a entender cómo están funcionando los sistemas simpático y parasimpático en el cuerpo.
 
----
-
 ### Transformada Wavelet: definición, usos y tipos de wavelet en señales biológicas
 La **transformada wavelet** es una técnica matemática que permite analizar cómo cambia una señal en el tiempo y en la frecuencia al mismo tiempo. Es especialmente útil para estudiar señales complejas, como las del cuerpo, que varían rápidamente.
 - **¿Qué hace?** Permite observar detalles en diferentes momentos de una señal (como un ECG) y ver cómo cambia a lo largo del tiempo.
@@ -97,7 +91,6 @@ La **transformada wavelet** es una técnica matemática que permite analizar có
    - **Wavelet de Daubechies**: Permite captar variaciones rápidas y ayuda en la detección de picos en señales como el ECG.
 
 La transformada wavelet es una herramienta poderosa para entender mejor cómo el cuerpo cambia y reacciona en diferentes situaciones.
-
 
 <a name="diagrama"></a> 
 ## Diagrama de flujo
